@@ -30,7 +30,7 @@ The chatbot follows a **sequence-to-sequence (seq2seq) architecture** with the f
 ## Flowchart
 The chatbot model follows this pipeline:
 
-![Chatbot Model Pipeline](./flowchart.png)
+![Chatbot Model Pipeline](./output.png)
 
 ## References
 1. **Cornell Movie Dialogs Corpus** - Danescu-Niculescu-Mizil et al. (2011)
