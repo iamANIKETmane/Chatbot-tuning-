@@ -1,61 +1,91 @@
-# Chatbot Model - HPML Homework 3
+# Chatbot Project
 
 ## Overview
-This project involves building a chatbot using **movie dialogues** from the Convokit dataset. The dataset contains **220,579 conversational exchanges** between **10,292 pairs of movie characters**, extracted from **617 movies**. The chatbot is developed using **PyTorch** and leverages deep learning techniques to generate responses.
+This project involves training a chatbot using a sequence-to-sequence model based on the Cornell Movie Dialogs Corpus. The chatbot is implemented using PyTorch and follows concepts from the PyTorch Chatbot Tutorial.
 
-## Dataset
-- **Source:** Convokit Movie Corpus
-- **Total Conversations:** 220,579
-- **Characters:** 9,035
-- **Total Utterances:** 304,713
-- **Format:** JSONL files (utterances.jsonl)
+## Approach
+1. **Dataset Preparation**
+   - Loaded and preprocessed the Cornell Movie-Dialogs Corpus.
+   - Extracted conversational pairs for training.
 
-## Model Architecture
-The chatbot follows a **sequence-to-sequence (seq2seq) architecture** with the following components:
-- **Preprocessing:** Data cleaning, tokenization, and normalization.
-- **Word Embeddings:** Word2Vec, GloVe, or learned embeddings.
-- **Model:** RNN, LSTM, or Transformer-based encoder-decoder.
-- **Training:** Optimization using loss functions (e.g., Cross-Entropy Loss).
-- **Inference:** Generating responses based on trained weights.
-- **Evaluation Metrics:** BLEU Score, Perplexity, etc.
+2. **Model Development**
+   - Implemented a sequence-to-sequence (seq2seq) model with Luong attention.
+   - Trained an encoder-decoder architecture using mini-batches.
+   - Implemented greedy-search decoding for response generation.
 
-## Workflow
-1. **Dataset Loading** - Movie dialogues are extracted from Convokit.
-2. **Preprocessing** - Text is cleaned, tokenized, and normalized.
-3. **Embedding Layer** - Word embeddings (e.g., Word2Vec, GloVe) are applied.
-4. **Seq2Seq Model Training** - The chatbot is trained using LSTM/Transformer models.
-5. **Inference** - Given an input, the model generates a conversational response.
-6. **Evaluation** - Performance is measured using BLEU Score, Perplexity, etc.
+3. **Hyperparameter Tuning with Weights & Biases (W&B)**
+   - Integrated W&B for logging and tracking experiments.
+   - Configured a hyperparameter sweep using Random Search for:
+     - Learning rate: [0.0001, 0.00025, 0.0005, 0.001]
+     - Optimizer: [adam, sgd]
+     - Clip: [0, 25, 50, 100]
+     - Teacher forcing ratio: [0, 0.5, 1.0]
+     - Decoder learning ratio: [1.0, 3.0, 5.0, 10.0]
+   - Conducted hyperparameter tuning on GPU-enabled Colab.
+   - Analyzed the best hyperparameter set based on minimum loss.
 
-## Flowchart
-The chatbot model follows this pipeline:
+4. **Performance Profiling**
+   - Used PyTorch Profiler to measure execution time and memory consumption.
+   - Analyzed CUDA kernel performance in Chrome Trace Viewer.
 
-![Chatbot Model Pipeline](./output.png)
-
-## References
-1. **Cornell Movie Dialogs Corpus** - Danescu-Niculescu-Mizil et al. (2011)
-   - [Paper](https://arxiv.org/abs/1106.3077)
-   - [Dataset](https://zissou.infosci.cornell.edu/convokit/datasets.html)
-2. **Sequence-to-Sequence Learning with Neural Networks** - Sutskever et al. (2014)
-   - [Paper](https://arxiv.org/abs/1409.3215)
-3. **Attention Is All You Need** - Vaswani et al. (2017)
-   - [Paper](https://arxiv.org/abs/1706.03762)
-
-## Installation
-To set up the environment, run:
-```bash
-pip install torch numpy nltk
-```
-
-## Running the Notebook
-1. Load the dataset:
-   ```bash
-   !wget -O data/movie-corpus.zip https://zissou.infosci.cornell.edu/convokit/datasets/movie-corpus/movie-corpus.zip
-   !unzip -o data/movie-corpus.zip -d data
-   ```
-2. Train the chatbot model using the notebook.
-3. Generate responses by providing input queries.
+5. **Model Evaluation and Saving**
+   - Evaluated the trained chatbot model.
+   - Saved the best-performing model based on loss.
 
 ---
-This project demonstrates **Natural Language Processing (NLP) for conversational AI**, implementing **deep learning techniques** to create a functional chatbot.
+
+1. **Understanding TorchScript**
+   - Compared tracing and scripting methods:
+     - Tracing: Runs a sample input through the model and records operations.
+     - Scripting: Converts model code into a TorchScript program.
+
+2. **Modifying Model for Scripting**
+   - Replaced incompatible Python constructs with TorchScript-friendly ones.
+   - Used `torch.jit.script` instead of tracing to handle dynamic loops and conditionals.
+
+3. **TorchScript Model Conversion**
+   - Converted the trained chatbot model to TorchScript.
+   - Printed the TorchScript computation graph.
+   - Evaluated TorchScript model performance.
+
+4. **Latency Comparison**
+   - Measured evaluation latency of both PyTorch and TorchScript models.
+   - Compared CPU and GPU performance.
+   - Created a latency table showing speedup improvements.
+
+5. **Deployment for Non-Python Environments**
+   - Saved and serialized the TorchScript model.
+   - Demonstrated loading the model in C++ using LibTorch.
+
+## Features
+- Loads and preprocesses movie dialogue data.
+- Implements a seq2seq chatbot with attention mechanism.
+- Supports hyperparameter tuning with W&B.
+- Profiles performance using PyTorch Profiler.
+- Converts and optimizes the model for TorchScript deployment.
+
+## Installation
+### Prerequisites
+- Python 3.x
+- Jupyter Notebook
+- Required Python libraries (install using `requirements.txt` if available)
+
+### Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+1. Open the Jupyter Notebook:
+   ```bash
+   jupyter notebook Chatbot.ipynb
+   ```
+2. Run the notebook cells in sequence to preprocess data and train the model.
+3. Interact with the chatbot in the final section of the notebook.
+
+## Dataset
+The dataset used is the Cornell Movie-Dialogs Corpus. It is loaded and processed within the notebook.
+
+## License
+Specify the license under which the project is distributed (e.g., MIT License).
 
